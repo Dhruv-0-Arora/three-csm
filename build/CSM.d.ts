@@ -1,7 +1,7 @@
 import { Vector3, DirectionalLight, Object3D, Material, PerspectiveCamera, OrthographicCamera, Color } from 'three';
 import CSMHelper from './CSMHelper';
 import CSMFrustum from './CSMFrustum';
-export declare type CustomSplitsCallbackType = (cascadeCount: number, nearDistance: number, farDistance: number) => number[];
+export type CustomSplitsCallbackType = (cascadeCount: number, nearDistance: number, farDistance: number) => number[];
 export interface CSMParams {
     camera: PerspectiveCamera | OrthographicCamera;
     parent: Object3D;
