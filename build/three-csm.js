@@ -81,7 +81,7 @@ IncidentLight directLight;
 	DirectionalLightShadow directionalLightShadow;
 	#endif
 
-	#if defined( USE_SHADOWMAP ) && defined( CSM_FADE ) && CSM_FADE == 1
+	#if defined( USE_SHADOWMAP ) && defined( CSM_FADE )
 	vec2 cascade;
 	float cascadeCenter;
 	float closestEdge;
@@ -93,7 +93,7 @@ IncidentLight directLight;
 	for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
 
 		directionalLight = directionalLights[ i ];
-		getDirectionalLightInfo( directionalLight, geometryPosition, directLight );
+		getDirectionalLightInfo( directionalLight, directLight );
 
 	  	#if defined( USE_SHADOWMAP ) && ( UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS )
 			// NOTE: Depth gets larger away from the camera.
@@ -141,7 +141,7 @@ IncidentLight directLight;
 					directionalLightShadow = directionalLightShadows[ i ];
 					directLight.color *= ( directLight.visible && receiveShadow ) ? getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;
 
-					RE_Direct( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
+					RE_Direct( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal,, material, reflectedLight );
 
 				#endif
 
@@ -155,9 +155,9 @@ IncidentLight directLight;
 		for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
 
 			directionalLight = directionalLights[ i ];
-			getDirectionalLightInfo( directionalLight, geometryPosition, directLight );
+			getDirectionalLightInfo( directionalLight, directLight );
 
-			#if defined( USE_SHADOWMAP ) && ( UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS ) 
+			#if defined( USE_SHADOWMAP ) && ( UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS )
 
 				#if ( UNROLLED_LOOP_INDEX < ${cascades} )
 
@@ -166,7 +166,7 @@ IncidentLight directLight;
 					directionalLightShadow = directionalLightShadows[ i ];
 					if(linearDepth >= CSM_cascades[UNROLLED_LOOP_INDEX].x && linearDepth < CSM_cascades[UNROLLED_LOOP_INDEX].y) directLight.color *= all( bvec2( directLight.visible, receiveShadow ) ) ? getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;
 
-					if(linearDepth >= CSM_cascades[UNROLLED_LOOP_INDEX].x && (linearDepth < CSM_cascades[UNROLLED_LOOP_INDEX].y || UNROLLED_LOOP_INDEX == CSM_CASCADES - 1)) RE_Direct( directLight, geometry, material, reflectedLight );
+					if(linearDepth >= CSM_cascades[UNROLLED_LOOP_INDEX].x && (linearDepth < CSM_cascades[UNROLLED_LOOP_INDEX].y || UNROLLED_LOOP_INDEX == CSM_CASCADES - 1)) RE_Direct( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
 
 				#else
 
@@ -174,7 +174,7 @@ IncidentLight directLight;
 
 					directionalLightShadow = directionalLightShadows[ i ];
 					directLight.color *= ( directLight.visible && receiveShadow ) ? getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;
-	
+
 					RE_Direct( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
 
 				#endif
@@ -194,7 +194,7 @@ IncidentLight directLight;
 
 			directionalLight = directionalLights[ i ];
 
-			getDirectionalLightInfo( directionalLight, geometryPosition, directLight );
+			getDirectionalLightInfo( directionalLight, directLight );
 
 			RE_Direct( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
 
@@ -218,7 +218,7 @@ IncidentLight directLight;
 
 		directionalLight = directionalLights[ i ];
 
-		getDirectionalLightInfo( directionalLight, geometryPosition, directLight );
+		getDirectionalLightInfo( directionalLight, directLight );
 
 		#if defined( USE_SHADOWMAP ) && ( UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS )
 		directionalLightShadow = directionalLightShadows[ i ];
@@ -256,7 +256,7 @@ IncidentLight directLight;
 	#if defined( USE_LIGHT_PROBES )
 
 		irradiance += getLightProbeIrradiance( lightProbe, geometryNormal );
-		
+
 	#endif
 
 	#if ( NUM_HEMI_LIGHTS > 0 )
@@ -264,7 +264,7 @@ IncidentLight directLight;
 		#pragma unroll_loop_start
 		for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {
 
-			irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometryNormal );
+				irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometryNormal );
 
 		}
 		#pragma unroll_loop_end
